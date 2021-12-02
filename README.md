@@ -1,6 +1,8 @@
-<h1>README</h1>
-Enter in console<p>
+# README
+Enter in console
+
 ``` npm run start ```
-for developing mode<p>
+for developing mode
+
 ``` npm run build ```
 for production mode
