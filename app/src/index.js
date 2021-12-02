@@ -5,15 +5,15 @@ const btnAddBook = document.getElementById("btnAddBook");
 const bookTable = document.getElementById("bookTable")
 const bookListTable = document.getElementById("bookList");
 
+
 var deleteElements = 0
 
 function addBookInHTML(book){
   bookListTable.insertAdjacentHTML('beforeend',`
     <tr>
       <td>${book.title}</td>
-      <td>${book.isbn}</td>
-      <td>${book.author}</td>
-      <td><button class="btn btn-sm btn-outline-danger delete form-control">X</button></td>
+      <td><button class="btn btn-sm btn-outline-danger delete form-control">Delete</button></td>
+      <td><button class="btn btn-sm btn-outline-success info form-control">View</button></td>
     </tr>
   `)
 }
@@ -31,10 +31,22 @@ function addDeleteEvent(userBooks){
   let deleteList = document.querySelectorAll('.delete');
   deleteList.forEach((btn, i) => {
       btn.addEventListener('click', () => {
-        userBooks.splice(i - deleteElements,1);
+        let removed = userBooks.splice(i,1);
         deleteElements = deleteElements + 1;
         localStorage.setItem(sessionStorage.getItem(1), JSON.stringify(userBooks));
         btn.parentElement.parentElement.remove();
+        location.reload()
+      });
+  });
+}
+
+function addInfoEvent(userBooks){
+  let deleteList = document.querySelectorAll('.info');
+  deleteList.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        document.getElementById("titleInfo").innerText = userBooks[i].title
+        document.getElementById("isbnInfo").innerText =  userBooks[i].isbn
+        document.getElementById("authorInfo").innerText = userBooks[i].Publisher
       });
   });
 }
@@ -52,7 +64,7 @@ function addNewBookEvent(userBooks) {
     }
     let newBook = { "title": document.getElementById("bookName").value,
                     "isbn":  document.getElementById("bookIsbn").value,
-                    "author":document.getElementById("bookPublisher").value}
+                    "Publisher":document.getElementById("bookPublisher").value}
     userBooks.push(newBook);
     addBookInHTML(newBook);
     addDeleteEvent(userBooks);
@@ -65,6 +77,7 @@ function login() {
   var userBooks = JSON.parse(localStorage.getItem(sessionStorage.getItem(1)));
   tableRendering(userBooks);
   addDeleteEvent(userBooks);
+  addInfoEvent(userBooks)
   addNewBookEvent(userBooks);
   bookTable.style.display = "block"
 }
@@ -73,7 +86,7 @@ if(!sessionStorage.getItem(1)){
   // If not logged in
   let emailField = document.getElementById("email");
   let btnLogin = document.getElementById("btnLogin");
-  loginForm.style.display = "block";
+  loginForm.style.display = "flex";
 
   btnLogin.addEventListener('click', function(event) {
   	event.preventDefault();
@@ -84,6 +97,7 @@ if(!sessionStorage.getItem(1)){
   	if(valid) {
       emailField.classList.remove("is-invalid");
       sessionStorage.setItem(1, emailField.value);
+      localStorage.setItem(sessionStorage.getItem(1), JSON.stringify([]))
       login();
     }
     else{
